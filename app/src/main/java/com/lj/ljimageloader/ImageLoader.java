@@ -30,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImageLoader {
+    private int resIdPlace;
+    private int resIdError;
     public static final String TAG = "ImageLoader";
 
     public static final int MESSAGE_POST_RESULT = 1;
@@ -74,10 +76,20 @@ public class ImageLoader {
         public void handleMessage(Message msg) {
             LoaderResult result = (LoaderResult) msg.obj;
             ImageView imageView = result.imageView;
-            imageView.setImageBitmap(result.bitmap);
-            imageView.setImageBitmap(result.bitmap);
+            if (imageView.getTag().equals(result.uri)) {
+                imageView.setImageBitmap(result.bitmap);
+            }
         }
     };
+    //占位图
+    public ImageLoader place(int resId) {
+        this.resIdPlace = resId;
+        return this;
+    }
+    public ImageLoader error(int resId) {
+        this.resIdError = resId;
+        return this;
+    }
 
 
     private ImageLoader(Context context) {
@@ -133,11 +145,15 @@ public class ImageLoader {
      * 异步加载
      */
     public void bindBitmap(final String uri, final ImageView imageView, final int reqWidth, final int reqHeight) {
+        if (resIdPlace != 0) {
+            imageView.setImageResource(resIdPlace);
+        }
         final Bitmap bitmap = loadBitmapFromMemCache(uri);
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
             return;
         }
+        imageView.setTag(uri);
         Runnable loadBitmapTask = new Runnable() {
             @Override
             public void run() {
@@ -145,6 +161,8 @@ public class ImageLoader {
                 if (bitmap != null) {
                     LoaderResult result = new LoaderResult(imageView, uri, bitmap);
                     mMainHandler.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
+                }else if (resIdError != 0) {
+                    imageView.setImageResource(resIdError);
                 }
             }
         };
@@ -276,9 +294,9 @@ public class ImageLoader {
 
 
     private static class LoaderResult {
-        public ImageView imageView;
-        public String uri;
-        public Bitmap bitmap;
+        ImageView imageView;
+        String uri;
+        Bitmap bitmap;
 
         public LoaderResult(ImageView imageView, String uri, Bitmap bitmap) {
             this.imageView = imageView;

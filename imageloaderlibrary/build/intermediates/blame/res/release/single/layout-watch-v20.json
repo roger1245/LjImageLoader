@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\MyApplication\\MyApp\\ljImageLoader\\imageloaderlibrary\\build\\intermediates\\res\\merged\\release\\layout-watch-v20\\abc_alert_dialog_title_material.xml",
+        "source": "C:\\Users\\roger\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-28.0.0.aar\\3562a4ef225dd17e7c85ce5d711672ca\\res\\layout-watch-v20\\abc_alert_dialog_title_material.xml"
+    },
+    {
+        "merged": "C:\\MyApplication\\MyApp\\ljImageLoader\\imageloaderlibrary\\build\\intermediates\\res\\merged\\release\\layout-watch-v20\\abc_alert_dialog_button_bar_material.xml",
+        "source": "C:\\Users\\roger\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-28.0.0.aar\\3562a4ef225dd17e7c85ce5d711672ca\\res\\layout-watch-v20\\abc_alert_dialog_button_bar_material.xml"
+    }
+]

@@ -15,6 +15,6 @@ public class Main2Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         imageView = findViewById(R.id.image_view);
-        ImageLoader.build(Main2Activity.this).bindBitmap("https://n.sinaimg.cn/front/520/w260h260/20190402/sx2b-hvcmeux5380071.jpg", imageView);
+        ImageLoader.build(Main2Activity.this).place(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher_round).bindBitmap("https://n.sinaimg.cn/front/520/w260h260/20190402/sx2b-hvcmeux5380071.jpg", imageView);
     }
 }

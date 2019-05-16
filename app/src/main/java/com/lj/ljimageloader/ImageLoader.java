@@ -33,6 +33,8 @@ public class ImageLoader {
     private int resIdPlace;
     private int resIdError;
     public static final String TAG = "ImageLoader";
+//这个参数设置tag其实就是uri
+//    private static final int TAG_KEY_URI = 0;
 
     public static final int MESSAGE_POST_RESULT = 1;
 
@@ -78,6 +80,8 @@ public class ImageLoader {
             ImageView imageView = result.imageView;
             if (imageView.getTag().equals(result.uri)) {
                 imageView.setImageBitmap(result.bitmap);
+            } else if (resIdError != 0) {
+                imageView.setImageResource(resIdError);
             }
         }
     };
@@ -142,9 +146,11 @@ public class ImageLoader {
     }
 
     /**
+     *
      * 异步加载
      */
     public void bindBitmap(final String uri, final ImageView imageView, final int reqWidth, final int reqHeight) {
+        imageView.setTag(uri);
         if (resIdPlace != 0) {
             imageView.setImageResource(resIdPlace);
         }
@@ -162,6 +168,7 @@ public class ImageLoader {
                     LoaderResult result = new LoaderResult(imageView, uri, bitmap);
                     mMainHandler.obtainMessage(MESSAGE_POST_RESULT, result).sendToTarget();
                 }else if (resIdError != 0) {
+                    //显示加载失败图片
                     imageView.setImageResource(resIdError);
                 }
             }
@@ -172,8 +179,10 @@ public class ImageLoader {
 
     /**
      * 同步加载
+     * 无法在主线程中调用
+     * 我作死的设置为私有
      */
-    public Bitmap loadBitmap(String uri, int reqWidth, int reqHeight) {
+    private Bitmap loadBitmap(String uri, int reqWidth, int reqHeight) {
         Bitmap bitmap = loadBitmapFromMemCache(uri);
         if (bitmap != null) {
             return bitmap;
@@ -202,6 +211,9 @@ public class ImageLoader {
         return getBitmapFromMemCache(key);
     }
 
+    /*
+     *不能在主线程中调用
+     */
     private Bitmap loadBitmapFromHttp(String url, int reqWidth, int reqHeight)
             throws IOException {
         if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -248,7 +260,7 @@ public class ImageLoader {
     }
     private int IO_BUFFER_SIZE = 4 * 1024; //4 KB
 
-    public boolean downloadUrlToStream(String urlString, OutputStream outputStream) {
+    private boolean downloadUrlToStream(String urlString, OutputStream outputStream) {
         HttpURLConnection urlConnection = null;
         BufferedOutputStream out = null;
         BufferedInputStream in = null;
@@ -280,7 +292,7 @@ public class ImageLoader {
     }
 
 
-    public File getDiskCacheDir(Context context, String uniqueName) {
+    private File getDiskCacheDir(Context context, String uniqueName) {
         boolean externalStorageAvailable = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
         final String cachePath;
         if (externalStorageAvailable) {
